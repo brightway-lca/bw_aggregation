@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from typing import Union
 
 from bw2data import databases

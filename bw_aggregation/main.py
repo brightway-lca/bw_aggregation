@@ -7,7 +7,6 @@ from bw_processing import (
     clean_datapackage_name,
     create_datapackage,
     load_datapackage,
-    safe_filename,
 )
 from fs.zipfs import ZipFS
 

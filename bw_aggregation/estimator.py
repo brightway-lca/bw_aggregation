@@ -1,5 +1,3 @@
-import random
-from collections import Counter
 from dataclasses import dataclass
 from time import time
 
@@ -8,7 +6,7 @@ from bw2data import Database, Node, prepare_lca_inputs
 
 from .errors import IncompatibleDatabase
 from .override import AggregationContext
-from .utils import check_processes_in_database, get_process_type_counts
+from .utils import check_processes_in_database
 
 
 @dataclass
