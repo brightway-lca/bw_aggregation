@@ -1,7 +1,7 @@
 """Fixtures for bw_aggregation"""
 
 import pytest
-from bw2data import Database, Method
+from bw2data import Database, Method, labels
 from bw2data.tests import bw2test
 
 
@@ -9,8 +9,8 @@ from bw2data.tests import bw2test
 @bw2test
 def background():
     bio_data = {
-        ("bio", "alpha"): {"exchanges": [], "type": "biosphere"},
-        ("bio", "beta"): {"exchanges": [], "type": "biosphere"},
+        ("bio", "alpha"): {"exchanges": [], "type": labels.biosphere_node_default},
+        ("bio", "beta"): {"exchanges": [], "type": labels.biosphere_node_default},
     }
     Database("bio").write(bio_data)
 
@@ -27,17 +27,17 @@ def background():
             "exchanges": [
                 {
                     "amount": 1,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("a", "1"),
                 },
                 {
                     "amount": 0.1,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "3"),
                 },
                 {
                     "amount": 7,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "beta"),
                 },
             ],
@@ -46,17 +46,17 @@ def background():
             "exchanges": [
                 {
                     "amount": 0.5,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("a", "2"),
                 },
                 {
                     "amount": -2,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "1"),
                 },
                 {
                     "amount": 1,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "alpha"),
                 },
             ],
@@ -65,32 +65,32 @@ def background():
             "exchanges": [
                 {
                     "amount": 1,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("a", "3"),
                 },
                 {
                     "amount": 3,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "1"),
                 },
                 {
                     "amount": 2,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "2"),
                 },
                 {
                     "amount": 2,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "alpha"),
                 },
                 {
                     "amount": 5,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "beta"),
                 },
             ],
         },
-        ("a", "4"): {"name": "CO2", "type": "emission", "exchanges": []},
+        ("a", "4"): {"name": "CO2", "type": labels.biosphere_node_default, "exchanges": []},
     }
     Database("a").write(a_data)
 
@@ -99,22 +99,22 @@ def background():
             "exchanges": [
                 {
                     "amount": 1,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("b", "1"),
                 },
                 {
                     "amount": 0.1,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("b", "2"),
                 },
                 {
                     "amount": 0.25,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "3"),
                 },
                 {
                     "amount": 7,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "beta"),
                 },
             ],
@@ -123,17 +123,17 @@ def background():
             "exchanges": [
                 {
                     "amount": 0.5,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("b", "2"),
                 },
                 {
                     "amount": -2,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "1"),
                 },
                 {
                     "amount": 5,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "beta"),
                 },
             ],
@@ -146,27 +146,27 @@ def background():
             "exchanges": [
                 {
                     "amount": 1,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("c", "1"),
                 },
                 {
                     "amount": 0.1,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("a", "3"),
                 },
                 {
                     "amount": 0.2,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("b", "2"),
                 },
                 {
                     "amount": 0.3,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("c", "2"),
                 },
                 {
                     "amount": 1,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "beta"),
                 },
             ],
@@ -175,17 +175,17 @@ def background():
             "exchanges": [
                 {
                     "amount": 0.5,
-                    "type": "production",
+                    "type": labels.production_edge_default,
                     "input": ("c", "2"),
                 },
                 {
                     "amount": -0.2,
-                    "type": "technosphere",
+                    "type": labels.consumption_edge_default,
                     "input": ("b", "1"),
                 },
                 {
                     "amount": 2,
-                    "type": "biosphere",
+                    "type": labels.biosphere_edge_default,
                     "input": ("bio", "alpha"),
                 },
             ],

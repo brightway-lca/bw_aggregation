@@ -2,7 +2,7 @@ from collections import Counter
 from collections.abc import Iterable
 from typing import Optional
 
-from bw2data import Database, databases
+from bw2data import Database, databases, labels
 
 
 def check_processes_in_database(database_name: str) -> bool:
@@ -14,7 +14,7 @@ def check_processes_in_database(database_name: str) -> bool:
 
 def check_processes_in_data(objects: Iterable) -> bool:
     """Check if any object in the input data has type `process`"""
-    return any(obj.get("type", "process") == "process" for obj in objects)
+    return any(obj.get("type", "process") in labels.process_node_types for obj in objects)
 
 
 def get_process_type_counts(database_name: str) -> dict[Optional[str], int]:
