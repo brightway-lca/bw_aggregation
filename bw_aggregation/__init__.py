@@ -8,7 +8,7 @@ __all__ = (
     "Speedup",
 )
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 
 from bw2data.backends import Activity
