@@ -31,13 +31,13 @@ requires-python = ">=3.9"
 dependencies = [
     # dependencies as strings with quotes, e.g. "foo"
     # You can add version requirements like "foo>2.0"
-    "bw2calc>1.99",
-    "bw2data>=4.0.dev36",
-    "bw_graph_tools>=0.3.1",
-    "bw_processing>=0.9.3",
+    "bw2calc>=2.1",
+    "bw2data>=4.5",
+    "bw_graph_tools>=0.6",
+    "bw_processing>=1.0",
     "fs",
-    "matrix_utils",
-    "numpy<2",
+    "matrix_utils>=0.6",
+    "numpy<3",
 ]
 
 [project.urls]
