@@ -108,6 +108,7 @@ def test_same_score_when_aggregated(background):
     lca.lcia()
     result = lca.score
 
+    print(expected, result)
     assert np.allclose(expected, result)
 
 
@@ -124,6 +125,7 @@ def test_same_score_when_aggregated_nonunitary_production(background):
     lca.lcia()
     result = lca.score
 
+    print(expected, result)
     assert np.allclose(expected, result)
 
 
@@ -140,6 +142,7 @@ def test_same_score_when_aggregated_in_supply_chain(background):
     lca.lcia()
     result = lca.score
 
+    print(expected, result)
     assert np.allclose(expected, result)
 
 
@@ -160,10 +163,14 @@ def test_same_score_when_multiple_aggregated_in_supply_chain(background):
     lca.lci()
     lca.lcia()
 
+    print(lca.technosphere_matrix.todense())
+    print(lca.biosphere_matrix.todense())
+
     check_a_database_matrices_aggregated(lca)
     check_b_database_matrices_aggregated(lca)
 
     result = lca.score
+    print(expected, result)
     assert np.allclose(expected, result)
 
 
@@ -189,6 +196,7 @@ def test_same_score_when_all_aggregated_in_supply_chain(background):
     check_b_database_matrices_aggregated(lca)
 
     result = lca.score
+    print(expected, result)
     assert np.allclose(expected, result)
 
 

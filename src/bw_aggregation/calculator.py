@@ -5,7 +5,6 @@ from bw2calc import LCA, spsolve
 from bw2data import databases, labels, prepare_lca_inputs
 from bw2data.database import DatabaseChooser
 from bw_graph_tools import guess_production_exchanges
-from matrix_utils import ArrayMapper
 from scipy.sparse import csr_matrix
 
 from .override import AggregationContext
@@ -114,7 +113,7 @@ class AggregationCalculator:
         return (
             {
                 "row": self.lca.dicts.biosphere.reversed[row],
-                "col": self.demand_array_column_to_database_id_mapping[col],
+                "col": self.lca.dicts.activity.reversed[col],
                 "amount": amount,
             }
             for row, col, amount in zip(
