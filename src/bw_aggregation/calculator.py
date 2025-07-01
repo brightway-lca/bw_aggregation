@@ -2,7 +2,7 @@ from time import time
 
 import numpy as np
 from bw2calc import LCA, spsolve
-from bw2data import databases, prepare_lca_inputs
+from bw2data import databases, prepare_lca_inputs, labels
 from bw2data.database import DatabaseChooser
 from bw_graph_tools import guess_production_exchanges
 from matrix_utils import ArrayMapper
@@ -33,33 +33,33 @@ class AggregationCalculator:
         # We use `guess_production_exchanges` instead of assuming values on a diagonal
         prod_rows, prod_cols = guess_production_exchanges(self.lca.technosphere_mm)
         # Not very efficient; could be SQL query but that would break IOTable
-        matrix_db_process_ids = np.array(
+        matrix_column_process_ids = np.array(
             [
                 self.lca.dicts.activity[obj.id]
                 for obj in self.db
-                if obj.get("type", "process") == "process"
+                if obj.get("type", labels.process_node_default) in labels.process_node_types
             ]
         )
 
         # Get boolean mask for the column indices of the processes in the database
         # we are looking at
-        mask = np.isin(prod_cols, matrix_db_process_ids)
+        mask = np.isin(prod_cols, matrix_column_process_ids)
+        prod_rows, prod_cols = prod_rows[mask], prod_cols[mask]
 
-        # Construct demand array with dimensions (all processes, filtered processes)
-        demand_array = np.zeros((self.lca.technosphere_matrix.shape[1], mask.sum()))
+        assert np.unique(prod_cols).shape == prod_cols.shape, "Non-unique production columns"
+
+        # Construct demand array with dimensions (all products, filtered processes)
+        demand_array = np.zeros((self.lca.technosphere_matrix.shape[0], mask.sum()))
 
         # This breaks our normal mapping, which was from processes to *all* columns
         # So we need a separate mapping for the filtered columns
-        am = ArrayMapper(array=prod_cols[mask])
-        column_mapping = am.reverse_dict()
-        self.reverse_filtered_column_mapping = {
-            int(filtered_column_idx): self.lca.dicts.activity.reversed[
-                column_mapping[filtered_column_idx]
-            ]
-            for filtered_column_idx in am.index_array[prod_cols[mask]]
-        }
-        # Only calculate for the products coming from the processes in our database
-        demand_array[prod_rows[mask], am.index_array[prod_cols[mask]].astype(int)] = 1
+        self.process_column_to_demand_array_index_mapper = {int(value): index for index, value in enumerate(prod_cols)}
+        self.process_demand_array_index_to_column_mapper = {v: k for k, v in self.process_column_to_demand_array_index_mapper.items()}
+        assert len(self.process_column_to_demand_array_index_mapper) == len(self.process_demand_array_index_to_column_mapper), "Non-unique database IDs or column mappings"
+
+        # Put in a 1 for each column at the product row. `prod_rows` is already matrix row indices
+        for row, col in zip(prod_rows, prod_cols):
+            demand_array[row, self.process_column_to_demand_array_index_mapper[col]] = 1
 
         if calc_time := self.db.metadata.get("aggregation_calculation_time"):
             print(
@@ -85,9 +85,9 @@ class AggregationCalculator:
 
         # Construct mapping back to database IDs
         self.products = [
-            self.lca.dicts.product.reversed[idx] for idx in prod_rows[mask]
+            self.lca.dicts.product.reversed[idx] for idx in prod_rows
         ]
-        self.processes = [self.lca.dicts.activity.reversed[idx] for idx in am.array]
+        self.processes = [self.lca.dicts.activity.reversed[idx] for idx in prod_cols]
 
     @property
     def technosphere_iterator(self) -> dict:
@@ -107,7 +107,7 @@ class AggregationCalculator:
         return (
             {
                 "row": self.lca.dicts.biosphere.reversed[row],
-                "col": self.reverse_filtered_column_mapping[col],
+                "col": self.demand_array_column_to_database_id_mapping[col],
                 "amount": amount,
             }
             for row, col, amount in zip(

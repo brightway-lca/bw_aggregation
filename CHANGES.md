@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [1.2] - 2025-06-28
 
 * Remove Numpy `<2` version pin
+* Move to `src` layout
 
 ### [1.1] - 2024-05-13
 

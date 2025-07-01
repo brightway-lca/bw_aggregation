@@ -67,7 +67,6 @@ dev = [
 [tool.setuptools]
 license-files = ["LICENSE"]
 include-package-data = true
-packages = ["bw_aggregation"]
 
 [tool.setuptools.dynamic]
 version = {attr = "bw_aggregation.__version__"}
