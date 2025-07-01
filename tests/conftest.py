@@ -90,7 +90,11 @@ def background():
                 },
             ],
         },
-        ("a", "4"): {"name": "CO2", "type": labels.biosphere_node_default, "exchanges": []},
+        ("a", "4"): {
+            "name": "CO2",
+            "type": labels.biosphere_node_default,
+            "exchanges": [],
+        },
     }
     Database("a").write(a_data)
 

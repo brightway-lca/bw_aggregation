@@ -2,7 +2,7 @@ from time import time
 
 import numpy as np
 from bw2calc import LCA, spsolve
-from bw2data import databases, prepare_lca_inputs, labels
+from bw2data import databases, labels, prepare_lca_inputs
 from bw2data.database import DatabaseChooser
 from bw_graph_tools import guess_production_exchanges
 from matrix_utils import ArrayMapper
@@ -37,7 +37,8 @@ class AggregationCalculator:
             [
                 self.lca.dicts.activity[obj.id]
                 for obj in self.db
-                if obj.get("type", labels.process_node_default) in labels.process_node_types
+                if obj.get("type", labels.process_node_default)
+                in labels.process_node_types
             ]
         )
 
@@ -46,16 +47,24 @@ class AggregationCalculator:
         mask = np.isin(prod_cols, matrix_column_process_ids)
         prod_rows, prod_cols = prod_rows[mask], prod_cols[mask]
 
-        assert np.unique(prod_cols).shape == prod_cols.shape, "Non-unique production columns"
+        assert (
+            np.unique(prod_cols).shape == prod_cols.shape
+        ), "Non-unique production columns"
 
         # Construct demand array with dimensions (all products, filtered processes)
         demand_array = np.zeros((self.lca.technosphere_matrix.shape[0], mask.sum()))
 
         # This breaks our normal mapping, which was from processes to *all* columns
         # So we need a separate mapping for the filtered columns
-        self.process_column_to_demand_array_index_mapper = {int(value): index for index, value in enumerate(prod_cols)}
-        self.process_demand_array_index_to_column_mapper = {v: k for k, v in self.process_column_to_demand_array_index_mapper.items()}
-        assert len(self.process_column_to_demand_array_index_mapper) == len(self.process_demand_array_index_to_column_mapper), "Non-unique database IDs or column mappings"
+        self.process_column_to_demand_array_index_mapper = {
+            int(value): index for index, value in enumerate(prod_cols)
+        }
+        self.process_demand_array_index_to_column_mapper = {
+            v: k for k, v in self.process_column_to_demand_array_index_mapper.items()
+        }
+        assert len(self.process_column_to_demand_array_index_mapper) == len(
+            self.process_demand_array_index_to_column_mapper
+        ), "Non-unique database IDs or column mappings"
 
         # Put in a 1 for each column at the product row. `prod_rows` is already matrix row indices
         for row, col in zip(prod_rows, prod_cols):
@@ -84,9 +93,7 @@ class AggregationCalculator:
         ).tocoo()
 
         # Construct mapping back to database IDs
-        self.products = [
-            self.lca.dicts.product.reversed[idx] for idx in prod_rows
-        ]
+        self.products = [self.lca.dicts.product.reversed[idx] for idx in prod_rows]
         self.processes = [self.lca.dicts.activity.reversed[idx] for idx in prod_cols]
 
     @property

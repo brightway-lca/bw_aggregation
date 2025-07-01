@@ -14,7 +14,10 @@ def check_processes_in_database(database_name: str) -> bool:
 
 def check_processes_in_data(objects: Iterable) -> bool:
     """Check if any object in the input data has type `process`"""
-    return any(obj.get("type", labels.process_node_default) in labels.process_node_types for obj in objects)
+    return any(
+        obj.get("type", labels.process_node_default) in labels.process_node_types
+        for obj in objects
+    )
 
 
 def get_process_type_counts(database_name: str) -> dict[Optional[str], int]:
